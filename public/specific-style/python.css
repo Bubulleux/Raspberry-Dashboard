@@ -1,0 +1,40 @@
+.python
+{
+	height: 100%;
+	float: left;
+	width: 30%;
+}
+
+
+
+.python .run-python input, .python .run-python select, .python .run-python label
+{
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.python table
+{
+    width: 100%;
+}
+
+.python .run-python label
+{
+    display: inline-block;
+}
+
+.python-output
+{
+	float: right;
+	width: 70%;
+    height: 100%;
+	padding-left: 20px;
+    display: block;
+}
+.python-output .console
+{
+	height: 90%;
+	margin-bottom: 10px;
+}
+

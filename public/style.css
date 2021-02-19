@@ -1,0 +1,93 @@
+*
+{
+	box-sizing: border-box;
+}
+
+body
+{
+	margin: 0;
+	background-color: white;
+	width: 100vw;
+	height: 100%;
+	font-size: 16px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.navbar
+{
+	text-align: center;
+	border-bottom: gray 1px solid;
+	padding: 7px 50px;
+	display: flex;
+	justify-content: space-around;
+	height: 55px;
+	background: white;
+}
+
+.navbar a
+{
+	font-size: xx-large;
+	color: black;
+	padding: 0;
+	display: inline-block;
+	text-decoration: none;
+	width: 20%;
+	height: 40px;
+	border-bottom: black 0px solid;
+	transition-duration: 0.1s;
+}
+
+.navbar a:hover
+{
+	border-bottom: black 2px solid;
+}
+
+.main
+{
+	margin: 55px 50px 0px;
+	padding: 10px 20px 0px;
+	position: absolute;
+	top: 0; left: 0; bottom: 0; right: 0;
+	background: rgb(238, 238, 238);
+	z-index: -1;
+}
+
+td, th
+{
+	border: 1px solid;
+	padding: 0.2em 1em;
+	text-decoration: none;
+}
+
+table
+{
+	border-collapse: collapse;
+	text-align: center;
+}
+
+
+.console
+{
+	background-color: black;
+	font-family: 'Courier New', Courier, monospace, sans-serif;
+	color: white;
+	overflow-y: scroll;
+}
+
+button, .button, input[type="button"], select
+{
+    background: white;
+    border: gray solid 1px;
+    padding: 5px 20px;
+	border-radius: 5px;
+	text-align: center;
+	color: black;
+	transition-duration: 0.2s;
+	cursor: pointer;
+}
+
+button:hover, .button:hover, input[type="button"]:hover, select:hover
+{
+	box-shadow: 1px 1px 5px 0px rgba(0,0,0,0.24);
+
+}

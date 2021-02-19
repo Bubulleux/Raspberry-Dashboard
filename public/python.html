@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python</title>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="navbar.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="specific-style/python.css">
+</head>
+<body>
+    <div id="navbar"></div>
+    <main class="main">
+        <div class="python">
+            <div class="run-python">
+                <form action="">
+                    <select name="python-script" id="python-script-select">
+                        <option value="python 1">Python 1</option>
+                        <option value="python 2">Python 3</option>
+                    </select><br>
+                    <label class="button" for="upload">Upload</label><input type="file" name="upload" id="upload" hidden><br>
+                    <input type="text" name="param" id="param" placeholder="Parameter"><br>
+                    <input type="button" value="Run" id="run"><br>
+                </form>
+            </div>
+            <div class="python-list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th><th>statue</th><th>Open</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Python 1</th><th>Complet</th><th><button>Open</button></th>
+                        </tr>
+
+                        <tr>
+                            <th>Python 1</th><th>Complet</th><th><button>Open</button></th>
+                        </tr>
+
+                        <tr>
+                            <th>Python 1</th><th>Complet</th><th><button>Open</button></th>
+                        </tr>
+
+                        <tr>
+                            <th>Python 1</th><th>Complet</th><th><button>Open</button></th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="python-output">
+            <div class="console">
+                <p>
+                    dzakdzak<br>
+                    dzakdzak<br>
+                    dzakdzak<br>
+                    dzakdzak<br>
+                </p>
+            </div>
+            <button>Stop</button>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,15 @@
+.dashboard-table
+{
+	margin: 1em 30%;
+	font-size: x-large;
+}
+
+.dashboard-table td
+{
+	padding: 1em 3em;
+}
+
+.dashboard-table button
+{
+	font-size: x-large;
+}

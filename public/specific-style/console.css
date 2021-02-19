@@ -1,0 +1,14 @@
+.console
+{
+	height: 80%;
+	margin: 10px 0;
+}
+
+.console-gestioner
+{
+	height: 100%;
+}
+.input input[type="text"]
+{
+	width: 50%;
+} 
