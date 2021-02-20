@@ -1,12 +1,19 @@
 .dashboard-table
 {
-	margin: 1em 30%;
+	margin: 0 0%;
 	font-size: x-large;
+	width: 100%;
+	padding: 0 10%;
+}
+
+.main
+{
+	padding: 20px 100px;
 }
 
 .dashboard-table td
 {
-	padding: 1em 3em;
+	padding: .3em 1em;
 }
 
 .dashboard-table button

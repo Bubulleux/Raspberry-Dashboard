@@ -73,6 +73,10 @@ table
 	color: white;
 	overflow-y: scroll;
 }
+.console p 
+{
+	margin: 0;
+}
 
 button, .button, input[type="button"], select
 {

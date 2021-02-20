@@ -1,4 +1,3 @@
 $(function(){
-    $("#navbar").load("navbar.html"); 
-    console.log("navbarLoad");
+    $("#navbar").load("navbar.html");
 });

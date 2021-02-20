@@ -5,11 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">-->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="specific-style/dashboard.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="navbar.js"></script>
+	<script src="/socket.io/socket.io.js"></script> 
+    <script src="dashboard.js"></script>
 </head>
 <body>
     <div id="navbar"></div>
@@ -17,16 +18,22 @@
         <table class="dashboard-table">
             <tbody>
                 <tr>
-                    <td>Model</td><td>Rasberry</td>
+                    <td>Model</td><td><span id="info-model"></span></td>
                 </tr>
                 <tr>
-                    <td>Temp</td><td>50°C</td>
+                    <td>OS</td><td><span id="info-os"></span></td>
                 </tr>
                 <tr>
-                    <td>CPU</td><td>70%</td>
+                    <td>HostName</td><td><span id="info-host"></span></td>
                 </tr>
                 <tr>
-                    <td><button>Reboot</button></td><td><button>Stop</button></td>
+                    <td>Temp</td><td><span id="info-cpuTemp"></span>°C</td>
+                </tr>
+                <tr>
+                    <td>CPU Load</td><td><span id="info-cpuLoad"></span> %</td>
+                </tr>
+                <tr>
+                    <td><button onclick="shutdown(true)">Reboot</button></td><td><button onclick="shutdown(false)">Power-off</button></td>
                 </tr>
             </tbody>
         </table>
