@@ -50,6 +50,7 @@ body
 	top: 0; left: 0; bottom: 0; right: 0;
 	background: rgb(238, 238, 238);
 	z-index: -1;
+	box-shadow: 0 0 10px 2px black;
 }
 
 td, th
@@ -90,8 +91,13 @@ button, .button, input[type="button"], select
 	cursor: pointer;
 }
 
-button:hover, .button:hover, input[type="button"]:hover, select:hover
+button:hover, input[type="button"]:hover, select:hover
 {
-	box-shadow: 1px 1px 5px 0px rgba(0,0,0,0.24);
+	box-shadow: 1px 1px 5px 0px #333;
 
+}
+button:disabled
+{
+	background: #999;
+	box-shadow: none;
 }

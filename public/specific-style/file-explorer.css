@@ -1,0 +1,118 @@
+/* Main */
+
+.main
+{
+	display: grid;
+	grid-template-columns: 10em 1fr;
+	grid-template-rows: min-content 1fr min-content;
+	grid-template-areas: "p p" "s f" "s a";
+	padding-bottom: 20px;
+}
+
+/* Path */
+
+.path
+{
+	grid-area: p;
+	display: flex;
+	margin-bottom: 10px;
+}
+
+.path form
+{
+	flex-grow: 2;
+	margin: 0 10px;
+}
+.path input
+{
+	width: 100%;
+}
+
+/* Shortcut */
+
+.shortcut
+{
+	grid-area: s;
+	margin-right: 10px;
+	padding: 5px;
+}
+.shortcut ul
+{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.shortcut li
+{
+	margin: 0;
+	padding: 0;
+	margin: 3px;
+	padding: 3px;
+}
+
+.shortcut h1
+{
+	font-size: 20px;
+	margin: 0px;
+}
+/* File */
+
+.file
+{
+	grid-area: f;
+	padding: 5px;
+	overflow-y: scroll;
+}
+
+.file table
+{
+	width: 100%;
+	text-align: left;
+}
+
+.file table *
+{
+	border: none;
+}
+
+.file table thead th
+{
+	border-bottom: #101010 solid 1px;
+}
+
+
+/* action */
+
+.action
+{
+	grid-area: a;
+	margin-top: 10px;
+	padding: 5px;
+}
+/* ---------------- */
+
+.file, .shortcut, .action
+{
+
+	background: #d0d0d0;
+	/* color: rgb(60, 200, 200); */
+	border-radius: 10px;
+}
+
+.file table tbody tr:hover, .shortcut li:hover
+{	
+	background: #bebebe;
+}
+
+.file table tbody tr[set], .shortcut li[set]
+{	
+	background: #999;
+}
+
+
+.file table tbody tr, .shortcut li
+{
+	cursor: pointer;
+	user-select: none;
+}

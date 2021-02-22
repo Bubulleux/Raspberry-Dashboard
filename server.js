@@ -13,13 +13,22 @@ app.use(express.static("public"))
 
 app.all("*", (request, reponse, next) =>
 {
-	//reponse.redirect("/login");
+	if(false)
+	{
+
+	}
+	else if (request.url === "/")
+	{
+		reponse.redirect("/dashboard");
+		return
+	}
 	fs.readFile("./public/" + pagesInfo.pages[request.url], "utf-8", (err, data) =>
 	{
 		if (err) reponse.status(404)
 		else
 		{
 			reponse.send(data);
+			reponse.end();
 			next();
 		}
 	});

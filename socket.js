@@ -1,5 +1,8 @@
 const si = require('systeminformation');
 const consolesManager = require("./consolesManager");
+const fs = require("fs");
+
+const password = "admin";
 
 exports = module.exports = (io) =>
 {
@@ -10,7 +13,24 @@ connect = (socket) =>
 {
 	dashboardSocket(socket);
 	consoleSocket(socket);
+	authentication(socket);
+	fileExplorerSocket(socket);
 } 
+
+authentication = (socket) =>
+{
+	socket.on("authen", (passwordSend) =>
+	{
+		if (password === passwordSend)
+		{
+			socket.emit("authenReponse", true, "Authentication Sucess");
+		}
+		else
+		{
+			socket.emit("authenReponse", false, "incorrect password");
+		}
+	})
+}
 
 dashboardSocket = (socket) =>
 {
@@ -91,5 +111,39 @@ consoleSocket = (socket) =>
 	socket.on("getOutput", (consoleName) =>
 	{
 		socket.emit("consoleOutput", consolesManager.GetOutputs()[consoleName], consoleName);
+	})
+}
+
+fileExplorerSocket = (socket) =>
+{
+	socket.on("get-files", (path) =>
+	{
+		if (!fs.existsSync(path))
+		{
+			socket.emit("error", "Sorry path does not exist")
+		}
+		fs.readdir(path, (err, files) =>
+		{
+			let filesReturn = [];
+			if (err) return;
+			for(curFile of files)
+			{
+				if (typeof curFile !== typeof String())
+				{
+					continue;
+				}
+				stats = fs.statSync(path + curFile);
+				filesReturn.push(
+				{
+					name: curFile,
+					size: stats.size,
+					creation: stats.birthtime,
+					modified: stats.mtime,
+					folder: stats.isDirectory(),
+				})
+			}
+			socket.emit("send-file", filesReturn, path);
+		})
+		
 	})
 }

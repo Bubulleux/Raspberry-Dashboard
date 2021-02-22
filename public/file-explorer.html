@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>File Explorer</title>
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="specific-style/file-explorer.css">
+	<link rel="stylesheet" href="asset/font-awesome/css/font-awesome.min.css">
+	<script src="/socket.io/socket.io.js"></script> 
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script src="navbar.js"></script>
+</head>
+<body onload="setPath('/home/pi/'); getFile()">
+	<div id="navbar"></div>
+	<main class="main">
+		<div class="path">
+			<button id="back" onclick="back()"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
+			<form action="" onsubmit="getFile(); return false"><input type="text" value="/" id="path"></form>
+			<button id="refresh" onclick="getFile()"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+		</div>
+		<div class="shortcut">
+			<h1>Shortcut</h1>
+			<ul>
+				<li set>/</li>
+				<li set>/home</li>
+			</ul>
+		</div>
+		<div class="file">
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Modified</th>
+						<th>Creation</th>
+						<th>Size</th>
+					</tr>
+				</thead>
+				<tbody id="files">
+				</tbody>
+			</table>
+		</div>
+		<div class="action">
+			<button id="btn-rename" disabled><i class="fa fa-i-cursor" aria-hidden="true"></i> Rename</button>
+			<button id="btn-delete" disabled><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
+			<button id="btn-copy" disabled><i class="fa fa-files-o" aria-hidden="true"></i> Copy</button>
+			<button id="btn-cut" disabled><i class="fa fa-scissors" aria-hidden="true"></i> Cut</button>
+			<button id="btn-past" disabled><i class="fa fa-clipboard" aria-hidden="true"></i> Past</button>
+			<button id="btn-download" disabled><i class="fa fa-download" aria-hidden="true"></i> Download</button>
+			<button id="btn-upload"><i class="fa fa-upload" aria-hidden="true"></i> Upload</button>
+		</div>
+	</main>
+	<script src="scripts/file-explorer.js"></script>
+</body>
+</html>
