@@ -2,7 +2,7 @@ const express = require("express")
 const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
-const fs = require("fs");
+const fs = require("fs-extra");
 const sckt = require("./socket")(io);
 const { count } = require("console");
 const pagesInfo = require("./pagesInfo");
@@ -34,9 +34,27 @@ app.all("*", (request, reponse, next) =>
 	});
 })
 
-
+//app.use(siofu.router);
 
 server.listen(8080, () =>
 {
 	console.log("Server On");
 });
+
+function removeTmp()
+{
+
+	fs.remove(__dirname + "/public/tmp", (err) =>
+	{
+		if (err)
+		{
+			console.log("err")
+		}
+		else
+		{
+			console.log("Tmp has been Removed");
+		}
+	});	
+}
+
+removeTmp();

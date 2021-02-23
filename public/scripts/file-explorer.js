@@ -8,8 +8,12 @@ var copyFile = undefined;
 var copyPath = undefined;
 var cutFile = false;
 
+
 var activeOnSelect = [$("#btn-rename"),$("#btn-delete"),$("#btn-copy"),$("#btn-cut"),$("#btn-download")];
 
+$("#btn-past").attr("disabled", "");
+
+resetBtn();
 
 function getPath() { return $("#path").val(); }
 
@@ -26,7 +30,6 @@ function select(index)
 	for(curBtn of activeOnSelect)
 	{
 		curBtn.removeAttr("disabled");
-
 	}
 }
 
@@ -62,7 +65,15 @@ function getFileName()
 	return files[selectedFile].name /*+ (files[selectedFile].folder ? "/" : "")*/;
 }
 
-//Button-------------------------------------------
+function resetBtn()
+{
+	for(curBtn of activeOnSelect)
+	{
+		curBtn.attr("disabled", "");
+	}
+}
+
+//Request------------------------------------------
 function back()
 {
 	let path = getPath();
@@ -71,20 +82,18 @@ function back()
 	getFile();
 }
 
-function newFile()
-{
-
-}
-
 function newFolder()
 {
-
+	var folderName = prompt("Folder Name:")
+	socket.emit("mkdir", getPath(), folderName);
+	getFile();
 }
 
 function rename()
 {
 	let rename = prompt("");
-	socket.emit("rename",getFileName(), rename);
+	socket.emit("rename", getPath() ,getFileName(), rename);
+	getFile();
 }
 
 function deleteFile()
@@ -95,15 +104,17 @@ function deleteFile()
 function copy()
 {
 	copyFile = getFileName();
-	copyPath = getPath()
+	copyPath = getPath();
 	cutFile = false;
+	$("#btn-past").removeAttr("disabled");
 }
 
 function cut()
 {
-	copyFile = getFileName();
-	copyPath = getPath()
+	copyFile = getFileName()+ (files[selectedFile].folder ? "/" : "");
+	copyPath = getPath();
 	cutFile = true;
+	$("#btn-past").removeAttr("disabled");
 }
 
 function past()
@@ -113,16 +124,9 @@ function past()
 
 function download()
 {
-	socket.emit("download", getPath() + getFile())
+	console.log(getPath() + getFileName());
+	socket.emit("download", getPath(), getFileName());
 }
-
-function upload()
-{
-
-}
-
-
-//Request------------------------------------------
 
 function getFile()
 {
@@ -136,6 +140,38 @@ function getFile()
 
 function getShortcut() { socket.emit("get-shortcut"); }
 
+function upload()
+{
+	console.log("File Upload");
+
+	var reader = new FileReader();
+
+	reader.onload = (evt) =>
+	{
+		if (evt.target.readyState == FileReader.DONE)
+		{
+			let fileBuffer = evt.target.result;
+			let veiw = new Uint8Array(fileBuffer);
+			let packet = []
+			let sendPacket = () =>
+			{
+				packet = [];
+			}
+			for(bit of veiw)
+			{
+				packet.push(bit);
+				if (packet.length >= 500)
+				{
+					sendPacket();
+				};
+			}
+			sendPacket();
+			console.log("upload End");
+		}
+	};
+
+	reader.readAsArrayBuffer(document.getElementById('upload-input').files[0]);
+}
 
 //Reponse------------------------------------------
 
@@ -147,7 +183,7 @@ socket.on("send-file", (filesReceived, path) =>
 	for(let curFile of filesReceived)
 	{
 		let fileHtml = `<tr onclick='select(${i})' ondblclick='openFile(${i})'>
-						<td><i class="fa fa-${curFile.folder ? 'folder': 'file'}" aria-hidden="true"></i>  ${curFile.name}</td>
+						<td><i class="fa fa-${curFile.folder ? 'folder': 'file-o'}" aria-hidden="true"></i>  ${curFile.name}</td>
 						<td>${curFile.modified}</td><td>${curFile.creation}</td><td>${curFile.size}</td></tr>`;
 		tableHtml += fileHtml;
 		i++;
@@ -156,6 +192,7 @@ socket.on("send-file", (filesReceived, path) =>
 	files = filesReceived;
 	selectedFile = undefined;
 	currentPath = path;
+	resetBtn();
 });
 
 socket.on("error", (error) =>
@@ -163,8 +200,9 @@ socket.on("error", (error) =>
 	alert(error);
 })
 
+socket.on("open", (url) => {open(url)});
 
-for(curBtn of activeOnSelect)
+socket.on("refresh", () =>
 {
-	curBtn.attr("disabled", "");
-}
+	getFile();
+})

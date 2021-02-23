@@ -89,6 +89,20 @@
 	grid-area: a;
 	margin-top: 10px;
 	padding: 5px;
+	display: flex;
+}
+.action button
+{
+	font-size: 14px;
+	margin: 0 5px;
+	padding: 3px 10px;
+}
+
+.action button i
+{
+	margin: 0;
+	padding: 0;
+	margin-right: 3px;
 }
 /* ---------------- */
 

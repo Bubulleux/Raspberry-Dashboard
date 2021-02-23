@@ -89,9 +89,10 @@ button, .button, input[type="button"], select
 	color: black;
 	transition-duration: 0.2s;
 	cursor: pointer;
+	user-select: none;
 }
 
-button:hover, input[type="button"]:hover, select:hover
+button:hover, input[type="button"]:hover, select:hover, .button:hover
 {
 	box-shadow: 1px 1px 5px 0px #333;
 
@@ -100,4 +101,9 @@ button:disabled
 {
 	background: #999;
 	box-shadow: none;
+}
+
+input[type="file"]
+{
+	display: none;
 }

@@ -1,8 +1,11 @@
 const si = require('systeminformation');
 const consolesManager = require("./consolesManager");
-const fs = require("fs");
+const fs = require("fs-extra");
+const compressing = require("compressing");
 
 const password = "admin";
+
+const uploadStream = {}
 
 exports = module.exports = (io) =>
 {
@@ -146,4 +149,70 @@ fileExplorerSocket = (socket) =>
 		})
 		
 	})
+
+	socket.on("download", (path, file) =>
+	{
+		fs.copy(path + file, __dirname + "/public/tmp/" + file, (err) =>
+		{
+			compressing.zip.compressDir(__dirname + "/public/tmp/" + file, __dirname + "/public/tmp/" + file + ".tar")
+			.then((err) =>
+			{
+				socket.emit("open", "/tmp/" + file + ".tar");
+			})
+		})
+	})
+
+	socket.on("delete", (file) =>
+	{
+		fs.remove(file, (err) =>
+		{
+			socket.emit("refresh");
+		});
+	})
+
+	socket.on("rename", (path, file, newName) =>
+	{
+		fs.rename(path + file, path + newName, () =>
+		{
+			console.log("rename");
+			socket.emit("refresh");
+		});
+	})
+
+	socket.on("mkdir", (path, folderName) =>
+	{
+		fs.mkdir(path + folderName, (error) =>
+		{
+			if (error)
+			{
+				socket.emit("error", "Make folder Error")
+			}
+			socket.emit("refresh");
+		})
+	})
+
+	socket.on("copy", (pathSource, pathDestination, file, cut) =>
+	{
+		fs.copy(pathSource + file, pathDestination + file, (err) =>
+		{
+			if (err) console.log(err);
+			let finish = () =>
+			{
+				console.log(`Copy finish Source: ${pathSource + file}, Destination: ${pathDestination}, Cut: ${cut}`);
+				socket.emit("refresh");
+			}
+			if (cut)
+			{
+				fs.remove(pathSource + file, (err) =>
+				{
+					finish();
+				});
+			}
+			else
+			{
+				finish();
+			}
+		})
+	});
+
 }
