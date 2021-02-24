@@ -91,18 +91,46 @@
 	padding: 5px;
 	display: flex;
 }
-.action button
+.action *
 {
 	font-size: 14px;
 	margin: 0 5px;
 	padding: 3px 10px;
 }
 
-.action button i
+.action * i
 {
 	margin: 0;
 	padding: 0;
 	margin-right: 3px;
+}
+
+.upload-menu
+{
+	margin: 0;
+	padding: 0;
+}
+.upload-menu .menu
+{
+	position: absolute;
+	display: none;
+	background: #ddd;
+	box-shadow: 0 0 1px 1px gray;
+	transform: translate(-20px, -97px);
+	padding: 3px 0px;
+	border-radius: 10px;
+	width: min-content;
+}
+
+.upload-menu .menu[show]
+{
+	display: block;
+}
+
+.upload-menu .menu button
+{
+	margin: 3px;
+	width: 120px;
 }
 /* ---------------- */
 

@@ -15,6 +15,11 @@ $("#btn-past").attr("disabled", "");
 
 resetBtn();
 
+$(document).on('click', function() {
+	$("#upload-menu").removeAttr("show");
+});
+  
+
 function getPath() { return $("#path").val(); }
 
 function setPath(path) { $("#path").val(path); }
@@ -70,6 +75,30 @@ function resetBtn()
 	for(curBtn of activeOnSelect)
 	{
 		curBtn.attr("disabled", "");
+	}
+}
+
+function uploadMenu()
+{
+	setTimeout(() => {$("#upload-menu").attr("show", "");}, 100);
+	
+}
+
+function uploadFile()
+{
+	console.log(document.getElementById('upload-file').files);
+	for(curFile of document.getElementById('upload-file').files)
+	{
+		upload(curFile, curFile.name);
+	}
+}
+
+function uploadFolder()
+{
+	console.log(document.getElementById('upload-folder').files);
+	for(curFile of document.getElementById('upload-folder').files)
+	{
+		upload(curFile, curFile.webkitRelativePath);
 	}
 }
 
@@ -140,21 +169,25 @@ function getFile()
 
 function getShortcut() { socket.emit("get-shortcut"); }
 
-function upload()
+function upload(file, name)
 {
-	console.log("File Upload");
+	console.log("File Upload " + name);
+
+	let path = getPath()
 
 	var reader = new FileReader();
-
 	reader.onload = (evt) =>
 	{
 		if (evt.target.readyState == FileReader.DONE)
 		{
 			let fileBuffer = evt.target.result;
-			let veiw = new Uint8Array(fileBuffer);
+			console.log(name);
+			let veiw = new Int8Array(fileBuffer);
 			let packet = []
+			socket.emit("upload-start", name);
 			let sendPacket = () =>
 			{
+				socket.emit("upload", name, packet);
 				packet = [];
 			}
 			for(bit of veiw)
@@ -166,11 +199,12 @@ function upload()
 				};
 			}
 			sendPacket();
-			console.log("upload End");
+			socket.emit("upload-end", name, path);
+			console.log("upload End " + name);
 		}
 	};
-
-	reader.readAsArrayBuffer(document.getElementById('upload-input').files[0]);
+	console.log(file)
+	reader.readAsArrayBuffer(file);
 }
 
 //Reponse------------------------------------------
@@ -206,3 +240,9 @@ socket.on("refresh", () =>
 {
 	getFile();
 })
+
+function dropHandler(ev) {
+	console.log('File(s) dropped');
+
+	console.log(evt.dataTransfer.files)
+  }

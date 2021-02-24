@@ -2,6 +2,7 @@ const si = require('systeminformation');
 const consolesManager = require("./consolesManager");
 const fs = require("fs-extra");
 const compressing = require("compressing");
+const pathJs = require("path");
 
 const password = "admin";
 
@@ -214,5 +215,32 @@ fileExplorerSocket = (socket) =>
 			}
 		})
 	});
+	socket.on("upload-start", (fileName) =>
+	{
+		console.log("upload-start " + fileName);
+		let path = "./public/tmp/" + pathJs.dirname(fileName);
+		if (!fs.existsSync(path))
+		{
+			fs.mkdir(path);
+		}
+		uploadStream[fileName] = fs.createWriteStream("./public/tmp/" + fileName);
+		uploadStream[fileName].on("error", (err) =>
+		{
+			console.log(err);
+		})
+	})
+
+	socket.on("upload", (fileName, packet) =>
+	{
+		var buffer = Buffer.from(packet);
+		uploadStream[fileName].write(buffer);
+	})
+
+	socket.on("upload-end", (fileName, path) =>
+	{
+		console.log("upload-end " + path + fileName);
+		uploadStream[fileName].end();
+		console.log("upload End");
+	})
 
 }

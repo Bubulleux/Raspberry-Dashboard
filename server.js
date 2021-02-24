@@ -44,7 +44,7 @@ server.listen(8080, () =>
 function removeTmp()
 {
 
-	fs.remove(__dirname + "/public/tmp", (err) =>
+	fs.emptyDir(__dirname + "/public/tmp", (err) =>
 	{
 		if (err)
 		{

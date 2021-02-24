@@ -12,7 +12,7 @@
 	<script src="/socket.io/socket.io.js"></script> 
 	<script src="navbar.js"></script>
 </head>
-<body onload="setPath('/home/pi/'); getFile()">
+<body onload="setPath('/home/pi/'); getFile()" >
 	<div id="navbar"></div>
 	<main class="main">
 		<div class="path">
@@ -27,7 +27,7 @@
 				<li set>/home</li>
 			</ul>
 		</div>
-		<div class="file">
+		<div class="file" ondrop="dropHandler(event)">
 			<table>
 				<thead>
 					<tr>
@@ -49,7 +49,17 @@
 			<button id="btn-cut" disabled onclick="cut()"><i class="fa fa-scissors" aria-hidden="true"></i> Cut</button>
 			<button id="btn-past" disabled onclick="past()"><i class="fa fa-clipboard" aria-hidden="true"></i> Past</button>
 			<button id="btn-download" disabled onclick="download()"><i class="fa fa-download" aria-hidden="true"></i> Download</button>
-			<label for="upload-input" class="button"> <i class="fa fa fa-upload" aria-hidden="true"></i> Upload</label><input type="file" id="upload-input" onchange="upload()">
+			
+			<div class="upload-menu">
+				<button id="btn-upload-menu" onclick="uploadMenu()"> <i class="fa fa fa-upload" aria-hidden="true"></i> Upload</button>
+				<div id="upload-menu" class="menu">
+					<button class="button" onclick="$('#upload-file').click()">Upload File</button>
+					<button class="button" onclick="$('#upload-folder').click()" >Upload Folder</button>
+					<input type="file" id="upload-file" onchange="uploadFile()" multiple>
+					<input type="file" id="upload-folder" onchange="uploadFolder()" webkitdirectory multiple>
+				</div>
+			</div>
+			
 		</div>
 	</main>
 	<script src="scripts/file-explorer.js"></script>
