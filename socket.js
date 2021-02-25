@@ -3,10 +3,12 @@ const consolesManager = require("./consolesManager");
 const fs = require("fs-extra");
 const compressing = require("compressing");
 const pathJs = require("path");
+const settings = require("./setting");
 
 const password = "admin";
 
 const uploadStream = {}
+var uploadBusy = false;
 
 exports = module.exports = (io) =>
 {
@@ -120,6 +122,30 @@ consoleSocket = (socket) =>
 
 fileExplorerSocket = (socket) =>
 {
+	let sendShortcut = () =>
+	{
+		const shortcut = settings.getSetting("shortcut");
+		socket.emit("send-shortcut", shortcut);
+	}
+
+	socket.on("get-shortcut", sendShortcut)
+
+	socket.on("add-shortcut", (shortcutAdd) =>
+	{
+		let shortcuts = settings.getSetting("shortcut");
+		shortcuts.push(shortcutAdd);
+		settings.setSetting("shortcut", shortcuts);
+		sendShortcut();
+	})
+
+	socket.on("remove-shortcut", (shortcutRemove) =>
+	{
+		let shortcuts = settings.getSetting("shortcut");
+		shortcuts.splice(shortcuts.indexOf(shortcutRemove), 1);
+		settings.setSetting("shortcut", shortcuts);
+		sendShortcut();
+	});
+
 	socket.on("get-files", (path) =>
 	{
 		if (!fs.existsSync(path))
@@ -215,32 +241,51 @@ fileExplorerSocket = (socket) =>
 			}
 		})
 	});
-	socket.on("upload-start", (fileName) =>
+
+	socket.on("upload-declare", (fileName) =>
 	{
-		console.log("upload-start " + fileName);
+		console.log("upload-declare " + fileName);
 		let path = "./public/tmp/" + pathJs.dirname(fileName);
 		if (!fs.existsSync(path))
 		{
 			fs.mkdir(path);
 		}
-		uploadStream[fileName] = fs.createWriteStream("./public/tmp/" + fileName);
-		uploadStream[fileName].on("error", (err) =>
-		{
-			console.log(err);
-		})
+		uploadStream[fileName] = {};
+	})
+
+	socket.on("upload-start", (fileName) =>
+	{
+		console.log("upload-start " + fileName);
+		
+		uploadStream[fileName].writer = fs.createWriteStream("./public/tmp/" + fileName);
+		uploadBusy = true;
 	})
 
 	socket.on("upload", (fileName, packet) =>
 	{
 		var buffer = Buffer.from(packet);
-		uploadStream[fileName].write(buffer);
+		uploadStream[fileName].writer.write(buffer);
 	})
 
 	socket.on("upload-end", (fileName, path) =>
 	{
-		console.log("upload-end " + path + fileName);
-		uploadStream[fileName].end();
-		console.log("upload End");
+		uploadStream[fileName].writer.end();
+		fs.copy(__dirname + "/public/tmp/" + fileName, path + fileName, (err) =>
+		{
+			if (err) console.log(err);
+			console.log("upload-end " + path + fileName);
+			socket.emit("refresh");
+		})
+		delete uploadStream[fileName];
+		uploadBusy = false;
 	})
 
+	const statSender = setInterval(() => 
+	{
+		socket.emit("file-explorer-status", 
+		{
+			uploadBusy: uploadBusy,
+			uploadList: Object.keys(uploadStream)
+		});
+	}, 1000);
 }

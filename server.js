@@ -6,6 +6,7 @@ const fs = require("fs-extra");
 const sckt = require("./socket")(io);
 const { count } = require("console");
 const pagesInfo = require("./pagesInfo");
+const { exit } = require("process");
 const terminals = [];
 
 app.use(express.static("public"))
@@ -43,18 +44,16 @@ server.listen(8080, () =>
 
 function removeTmp()
 {
-
-	fs.emptyDir(__dirname + "/public/tmp", (err) =>
-	{
-		if (err)
-		{
-			console.log("err")
-		}
-		else
-		{
-			console.log("Tmp has been Removed");
-		}
-	});	
+	console.log("Cleaning tmp...")
+	fs.emptyDirSync(__dirname + "/public/tmp")
+	console.log("Cleaning finish");
 }
 
 removeTmp();
+
+process.on("SIGINT", () =>
+{
+	console.log("exit")
+	removeTmp();
+	process.exit(0);
+})

@@ -6,3 +6,4 @@ exports.pages =
 	"/login-page": "login.html",
 	"/file-explorer": "file-explorer.html",
 }
+

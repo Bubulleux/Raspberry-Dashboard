@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="specific-style/file-explorer.css">
 	<link rel="stylesheet" href="asset/font-awesome/css/font-awesome.min.css">
 	<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-	<script src="/socket.io/socket.io.js"></script> 
+	<script src="/socket.io/socket.io.js"></script>
 	<script src="navbar.js"></script>
 </head>
 <body onload="setPath('/home/pi/'); getFile()" >
@@ -22,10 +22,7 @@
 		</div>
 		<div class="shortcut">
 			<h1>Shortcut</h1>
-			<ul>
-				<li set>/</li>
-				<li set>/home</li>
-			</ul>
+			<ul id="shortcut-list"></ul>
 		</div>
 		<div class="file" ondrop="dropHandler(event)">
 			<table>
@@ -42,7 +39,7 @@
 			</table>
 		</div>
 		<div class="action">
-			<button id="btn-new-folder" disabled onclick="newFolder()"><i class="fa fa-folder" aria-hidden="true"></i> New Folder</button>
+			<button id="btn-new-folder" onclick="newFolder()"><i class="fa fa-folder" aria-hidden="true"></i> New Folder</button>
 			<button id="btn-rename" disabled onclick="rename()"><i class="fa fa-i-cursor" aria-hidden="true"></i> Rename</button>
 			<button id="btn-delete" disabled onclick="deleteFile()"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
 			<button id="btn-copy" disabled onclick="copy()"><i class="fa fa-files-o" aria-hidden="true"></i> Copy</button>
@@ -59,9 +56,12 @@
 					<input type="file" id="upload-folder" onchange="uploadFolder()" webkitdirectory multiple>
 				</div>
 			</div>
+
+			<button id="btn-shortcut" onclick="addShortcut()"></button>
 			
 		</div>
 	</main>
 	<script src="scripts/file-explorer.js"></script>
+	<script src="scripts/file-upload.js"></script>
 </body>
 </html>

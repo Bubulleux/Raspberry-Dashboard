@@ -8,6 +8,9 @@ var copyFile = undefined;
 var copyPath = undefined;
 var cutFile = false;
 
+var shortcut = [];
+
+var fileExplorerStatus = undefined;
 
 var activeOnSelect = [$("#btn-rename"),$("#btn-delete"),$("#btn-copy"),$("#btn-cut"),$("#btn-download")];
 
@@ -22,7 +25,11 @@ $(document).on('click', function() {
 
 function getPath() { return $("#path").val(); }
 
-function setPath(path) { $("#path").val(path); }
+function setPath(path) 
+{ 
+	$("#path").val(path);
+	checkShortcut();
+}
 
 function select(index)
 {
@@ -89,7 +96,7 @@ function uploadFile()
 	console.log(document.getElementById('upload-file').files);
 	for(curFile of document.getElementById('upload-file').files)
 	{
-		upload(curFile, curFile.name);
+		declareUpload(curFile, curFile.name);
 	}
 }
 
@@ -98,15 +105,74 @@ function uploadFolder()
 	console.log(document.getElementById('upload-folder').files);
 	for(curFile of document.getElementById('upload-folder').files)
 	{
-		upload(curFile, curFile.webkitRelativePath);
+		declareUpload(curFile, curFile.webkitRelativePath);
 	}
+}
+
+function checkShortcut()
+{
+	let shortcutListChild = document.getElementById("shortcut-list").childNodes;
+	let path = getPath();
+	let findShortcut = false;
+	for(curChild of shortcutListChild)
+	{
+		if (curChild.getAttribute("shortcut") === path)
+		{
+			curChild.setAttribute("set", "");
+			findShortcut = true;
+		}
+		else if (curChild.getAttribute("set") != null)
+		{
+			curChild.removeAttribute("set");
+		}
+	}
+	let btn = $("#btn-shortcut");
+	let html = ""
+	if (findShortcut)
+	{
+		html = `<i class="fa fa-minus" aria-hidden="true"></i> Remove Shortcut`;
+	}
+	else
+	{
+		html = `<i class="fa fa-plus" aria-hidden="true"></i> Add Shortcut`;
+	}
+	btn.html(html);
+}
+
+function partTime(time)
+{
+	let timeSplit = time.split("T")
+	timeSplit[1] = timeSplit[1].slice(0, timeSplit[1].length - 5);
+	let newTime = timeSplit[0] + " " + timeSplit[1]
+	return newTime;
+}
+
+function parseSize(size)
+{
+	const unit = 
+	{
+		"B": 10 ** 3 ,
+		"KB": 10 ** 6,
+		"MB": 10 ** 9,
+		"GB": 10 ** 12,
+		"TB": Infinity,
+	};
+
+	for(let key in unit)
+	{
+		if (size < unit[key])
+		{
+			return "" + (Math.round(size / unit[key] * 10 ** 4) / 10) + " " + key;
+		}
+	}
+	return undefined;
 }
 
 //Request------------------------------------------
 function back()
 {
 	let path = getPath();
-	let newPath = path.slice(0, path.lastIndexOf("/", getPath().length - 3)) + "/"
+	let newPath = path.slice(0, path.lastIndexOf("/", getPath().length - 3) + 1)
 	setPath(newPath);
 	getFile();
 }
@@ -169,42 +235,16 @@ function getFile()
 
 function getShortcut() { socket.emit("get-shortcut"); }
 
-function upload(file, name)
+function addShortcut()
 {
-	console.log("File Upload " + name);
-
-	let path = getPath()
-
-	var reader = new FileReader();
-	reader.onload = (evt) =>
+	if (shortcut.indexOf(getPath()) == -1)
 	{
-		if (evt.target.readyState == FileReader.DONE)
-		{
-			let fileBuffer = evt.target.result;
-			console.log(name);
-			let veiw = new Int8Array(fileBuffer);
-			let packet = []
-			socket.emit("upload-start", name);
-			let sendPacket = () =>
-			{
-				socket.emit("upload", name, packet);
-				packet = [];
-			}
-			for(bit of veiw)
-			{
-				packet.push(bit);
-				if (packet.length >= 500)
-				{
-					sendPacket();
-				};
-			}
-			sendPacket();
-			socket.emit("upload-end", name, path);
-			console.log("upload End " + name);
-		}
-	};
-	console.log(file)
-	reader.readAsArrayBuffer(file);
+		socket.emit("add-shortcut", getPath())
+	}
+	else
+	{
+		socket.emit("remove-shortcut", getPath())
+	}
 }
 
 //Reponse------------------------------------------
@@ -218,7 +258,7 @@ socket.on("send-file", (filesReceived, path) =>
 	{
 		let fileHtml = `<tr onclick='select(${i})' ondblclick='openFile(${i})'>
 						<td><i class="fa fa-${curFile.folder ? 'folder': 'file-o'}" aria-hidden="true"></i>  ${curFile.name}</td>
-						<td>${curFile.modified}</td><td>${curFile.creation}</td><td>${curFile.size}</td></tr>`;
+						<td>${partTime(curFile.modified)}</td><td>${partTime(curFile.creation)}</td><td>${curFile.folder? "" : parseSize(curFile.size)}</td></tr>`;
 		tableHtml += fileHtml;
 		i++;
 	}
@@ -241,8 +281,23 @@ socket.on("refresh", () =>
 	getFile();
 })
 
-function dropHandler(ev) {
-	console.log('File(s) dropped');
+socket.on("file-explorer-status", (status) =>
+{
+	fileExplorerStatus = status;
+})
 
-	console.log(evt.dataTransfer.files)
-  }
+socket.on("send-shortcut", (shortcutSend) =>
+{
+	shortcut = shortcutSend;
+	let shortcutHtml = "";
+	
+	for( curShortcut of shortcut)
+	{
+		let shortShortCut = curShortcut.slice(curShortcut.lastIndexOf("/", curShortcut.length - 3) + 1 , curShortcut.length - 1) + "/";
+		shortcutHtml += `<li title='${curShortcut}' onclick='setPath("${curShortcut}"); getFile()' shortcut='${curShortcut}'>${shortShortCut}</li>`;
+	}
+	$("#shortcut-list").html(shortcutHtml);
+	checkShortcut()
+})
+
+getShortcut();
