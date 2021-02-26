@@ -8,31 +8,40 @@ const { count } = require("console");
 const pagesInfo = require("./pagesInfo");
 const { exit } = require("process");
 const terminals = [];
+const cookieParser = require("cookie-parser");
+const { urlencoded } = require("express");
+const setting = require("./setting")
 
 app.use(express.static("public"))
+//app.use(cookieParser);
+app.use(express.urlencoded());
+app.use(express.json())
 
 
 app.all("*", (request, reponse, next) =>
 {
-	if(false)
+	if(request.url === "/authen")
 	{
-
+		let passwordSend = request.body.password;
 	}
 	else if (request.url === "/")
 	{
 		reponse.redirect("/dashboard");
 		return
 	}
-	fs.readFile("./public/" + pagesInfo.pages[request.url], "utf-8", (err, data) =>
+	else
 	{
-		if (err) reponse.status(404)
-		else
+		fs.readFile("./public/" + pagesInfo.pages[request.url], "utf-8", (err, data) =>
 		{
-			reponse.send(data);
-			reponse.end();
-			next();
-		}
-	});
+			if (err) reponse.status(404)
+			else
+			{
+				reponse.send(data);
+				reponse.end();
+				next();
+			}
+		});
+	}
 })
 
 //app.use(siofu.router);

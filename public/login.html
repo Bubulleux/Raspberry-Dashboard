@@ -15,8 +15,8 @@
 	<main class="main">
 		<h1 class="title">Raspberry Manager</h1>
 		<div class="loginBox">
-			<form action="" class="login" id="login" onsubmit="return Submit()">
-				<input type="password" placeholder="Password" id="password"><br>
+			<form action="/authen" class="login" id="login" method="POST">
+				<input type="password" placeholder="Password" id="password" name="password"><br>
 				<button>Connect</button>
 			</form>
 		</div>

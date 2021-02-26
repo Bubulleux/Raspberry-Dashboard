@@ -19,24 +19,9 @@ connect = (socket) =>
 {
 	dashboardSocket(socket);
 	consoleSocket(socket);
-	authentication(socket);
 	fileExplorerSocket(socket);
 } 
 
-authentication = (socket) =>
-{
-	socket.on("authen", (passwordSend) =>
-	{
-		if (password === passwordSend)
-		{
-			socket.emit("authenReponse", true, "Authentication Sucess");
-		}
-		else
-		{
-			socket.emit("authenReponse", false, "incorrect password");
-		}
-	})
-}
 
 dashboardSocket = (socket) =>
 {
